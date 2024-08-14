@@ -446,7 +446,7 @@ NTSTATUS BBAllocateFreePhysical( IN PEPROCESS pProcess, IN PALLOCATE_FREE_MEMORY
         if (pAllocFree->base != 0 && BBFindVAD( pProcess, pAllocFree->base, &pVad ) != STATUS_NOT_FOUND)
             return STATUS_ALREADY_COMMITTED;
 
-        pRegionBase = ExAllocatePoolWithTag( NonPagedPool, pAllocFree->size, BB_POOL_TAG );
+        pRegionBase = ExAllocatePool2(POOL_FLAG_NON_PAGED, pAllocFree->size, BB_POOL_TAG );
         if (!pRegionBase)
             return STATUS_NO_MEMORY;
 
@@ -502,14 +502,14 @@ NTSTATUS BBAllocateFreePhysical( IN PEPROCESS pProcess, IN PALLOCATE_FREE_MEMORY
             pEntry = BBLookupPhysProcessEntry( (HANDLE)pAllocFree->pid );
             if (pEntry == NULL)
             {
-                pEntry = ExAllocatePoolWithTag( PagedPool, sizeof( MEM_PHYS_PROCESS_ENTRY ), BB_POOL_TAG );
+                pEntry = ExAllocatePool2(POOL_FLAG_PAGED, sizeof( MEM_PHYS_PROCESS_ENTRY ), BB_POOL_TAG );
                 pEntry->pid = (HANDLE)pAllocFree->pid;
 
                 InitializeListHead( &pEntry->pVadList );
                 InsertTailList( &g_PhysProcesses, &pEntry->link );
             }
 
-            pMemEntry = ExAllocatePoolWithTag( PagedPool, sizeof( MEM_PHYS_ENTRY ), BB_POOL_TAG );
+            pMemEntry = ExAllocatePool2(POOL_FLAG_PAGED, sizeof( MEM_PHYS_ENTRY ), BB_POOL_TAG );
             
             pMemEntry->pMapped = (PVOID)pResult->address;
             pMemEntry->pMDL = pMDL;

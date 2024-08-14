@@ -37,7 +37,7 @@ VOID InitializeDebuggerBlock()
     context.ContextFlags = CONTEXT_FULL;
     RtlCaptureContext( &context );
     
-    PDUMP_HEADER dumpHeader = ExAllocatePoolWithTag( NonPagedPool, DUMP_BLOCK_SIZE, BB_POOL_TAG );
+    PDUMP_HEADER dumpHeader = ExAllocatePool2(POOL_FLAG_NON_PAGED, DUMP_BLOCK_SIZE, BB_POOL_TAG );
     if (dumpHeader)
     {
         KeCapturePersistentThreadState( &context, NULL, 0, 0, 0, 0, 0, dumpHeader );
@@ -153,7 +153,7 @@ PVOID GetKernelBase( OUT PULONG pSize )
         return NULL;
     }
 
-    pMods = (PRTL_PROCESS_MODULES)ExAllocatePoolWithTag( NonPagedPool, bytes, BB_POOL_TAG );
+    pMods = (PRTL_PROCESS_MODULES)ExAllocatePool2(POOL_FLAG_NON_PAGED, bytes, BB_POOL_TAG );
     RtlZeroMemory( pMods, bytes );
 
     status = ZwQuerySystemInformation( SystemModuleInformation, pMods, bytes, &bytes );

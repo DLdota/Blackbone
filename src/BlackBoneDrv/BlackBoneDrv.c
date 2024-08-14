@@ -177,7 +177,7 @@ NTSTATUS BBGetBuildNO( OUT PULONG pBuildNo )
     status = ZwOpenKey( &hKey, KEY_READ, &keyAttr );
     if (NT_SUCCESS( status ))
     {
-        PKEY_VALUE_FULL_INFORMATION pValueInfo = ExAllocatePoolWithTag( PagedPool, PAGE_SIZE, BB_POOL_TAG );
+        PKEY_VALUE_FULL_INFORMATION pValueInfo = ExAllocatePool2(POOL_FLAG_PAGED, PAGE_SIZE, BB_POOL_TAG );
         ULONG bytes = 0;
 
         if (pValueInfo)
